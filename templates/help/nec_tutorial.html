@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="Layout_flat">
+    <h2>NEC Tutorial</h2>
+    
+    <h3>1. Introduction</h3>
+    <p>In this tutorial, we will size a cable for a 3-phase, 400V, 11kW load with power factor 0.86 and efficiency 0.91. A 3C cable is selected with copper conductors and heat- and moisture-resistant thermoplastic (THHN) insulation operating at less than 90&degF. The cable will be run from a distribution board to the load via underfloor raceways at an ambient temperature of 95&degF. The cable will be run in the same raceway with two other 3C cables. The cable run is expected to be approximately 75 ft and the maximum allowable voltage drop is 5%. </p>
+    
+    <h3>2. Ampacity Considerations</h3>
+    <p>We'd first like to determine the minimum cable size such that the cable's ampacity (or current carrying capacity) is sufficient to continuously supply the load without being damaged.</p>
+    <p>Firstly, we enter in the following basic cable parameters:</p>
+    <img class="indented" border=0 src="../../static/images/nec_tutorial/NEC_ampacity1.jpg">
+    
+    <p>Next, we enter in the following load information (note that given this data, Cablesizer will automatically calculate the full load current):</p>
+    <img class="indented" border=0 src="../../static/images/nec_tutorial/NEC_ampacity2.jpg">
+    
+    <p>Then we enter in the installation method "Raceways" and press the update button:</p>
+    <img class="indented" border=0 src="../../static/images/nec_tutorial/NEC_ampacity3.jpg">
+    
+    <p>Lastly, we enter in the cable installation conditions. As there will be three 3C cables in the same raceway, a total of 9 grouped current carrying conductors needs to be selected. Also, the raceways are not exposed to sunlight so we leave the distance above roof to conduit as "Not applicable". </p>
+    <img class="indented" border=0 src="../../static/images/nec_tutorial/NEC_ampacity4.jpg">
+    
+    <p>Pressing the submit button yields the following results:</p>
+    <img class="indented" border=0 src="../../static/images/nec_tutorial/NEC_ampacity5.jpg">
+    <p>The results show that the minimum cable size based on ampacity considerations is a 10AWG.</p>
+    
+    <h3>3. Voltage Drop Considerations</h3>
+    <p>Next we'd like to size the cable so that the voltage drop across the cable is less than the 5% maximum allowable voltage drop criteria specified earlier.</p>
+    <p>When we click on the "Volt Drop" link, the basic cable and load information that we filled in earlier is retained, so we don't have to enter it in again. We'd first like to check what the voltage drop is at the minimum cable size calculated earlier (10 AWG). So we enter in the following information:</p>
+    <img class="indented" border=0 src="../../static/images/nec_tutorial/NEC_voltdrop1.jpg">
+    
+    <p>Pressing the submit button yields the following results:</p>
+    <img class="indented" border=0 src="../../static/images/nec_tutorial/NEC_voltdrop2.jpg">
+    <p>The results show that a 10 AWG cable has a calculated volt drop of 0.6967%, lower than our maximum allowable volt drop of 5%. Therefore a 10 AWG cable is the appropriate choice for this application.</p>
+    
+    <h3>4. Cable Sizing Report</h3>
+    <p>Finally, we can click on the "Report" link and print out the cable sizing report (see the snippet below):</p>
+    <img height=400 border=0 src="../../static/images/nec_tutorial/NEC_report.jpg">
+    
+    </div>
+{% endblock %}

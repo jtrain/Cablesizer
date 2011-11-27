@@ -1,0 +1,155 @@
+{% extends "base_nec.html" %}
+
+{% block jscript %}
+<script type="text/javascript">
+$(document).ready(function() {
+ 	
+	$("#load_input").validate({
+      rules: {
+    load_volt: {
+      required: true,
+      number: true,
+      min: 0
+    },
+    load_kw: {
+      required: "#load_current:blank",
+      number: true,
+      min: 0
+    },
+    load_current: {
+      required: "#load_kw:blank",
+      number: true,
+      min: 0
+    },
+    load_eff: {
+      required: "#load_current:blank",
+      number: true,
+      range: [0, 1]
+    },
+    load_cont: {
+      required: "#load_non_cont:blank",
+      number: true,
+      min: 0
+    },
+    load_non_cont: {
+      required: "#load_cont:blank",
+      number: true,
+      min: 0
+    },
+    prot_device: {
+      required: true,
+      number: true,
+      min: 0
+    },
+    load_pf: {
+      required: true,
+      number: true,
+      range: [0, 1]
+    },
+    max_vdrop: {
+      required: true,
+      number: true,
+      range: [0, 100]
+    },
+    cable_run: {
+      required: true,
+      number: true,
+      min: 0
+    }
+   }
+ });
+
+ $("input[name$='load_type']").click(function(){
+ 
+  var radio_value = $(this).val();
+ 
+  if(radio_value=='General') {
+    $("#yes_box").show("slow");
+     $("#no_box").hide("fast");
+  }
+  else if(radio_value=='Feeder') {
+   $("#no_box").show("slow");
+    $("#yes_box").hide("fast");
+   }
+ });
+ {% if loadtype_query == "General" %}
+    $("#yes_box").show("slow");
+    $("#no_box").hide("fast");
+ {% else %} 
+    $("#no_box").show("slow");
+    $("#yes_box").hide("fast");
+ {% endif %} 
+ 
+});
+</script>
+
+<style type="text/css">
+#load_input { width: 100%; }
+#load_input label { width: 170px; }
+#load_input label.error, #load_input input.Submit { margin-left: 153px; }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class=Layout_middle>
+
+<h2>Voltage Drop Calculation</h2>
+    <fieldset>
+        <p><label for="selected_size">Select cable size:</label> <select name="selected_size">
+            {% if cond_query == "Copper" %}
+            <option value="14" {% if selectedsize_query == "14" %}Selected{% endif %}>14</option>
+            {% endif %}
+            <option value="12" {% if selectedsize_query == "12" %}Selected{% endif %}>12</option>
+            <option value="10" {% if selectedsize_query == "10" %}Selected{% endif %}>10</option>
+            <option value="8" {% if selectedsize_query == "8" %}Selected{% endif %}>8</option>
+            <option value="6" {% if selectedsize_query == "6" %}Selected{% endif %}>6</option>
+            <option value="4" {% if selectedsize_query == "4" %}Selected{% endif %}>4</option>
+            <option value="3" {% if selectedsize_query == "3" %}Selected{% endif %}>3</option>
+            <option value="2" {% if selectedsize_query == "2" %}Selected{% endif %}>2</option>
+            <option value="1" {% if selectedsize_query == "1" %}Selected{% endif %}>1</option>
+            <option value="1/0" {% if selectedsize_query == "1/0" %}Selected{% endif %}>1/0</option>
+            <option value="2/0" {% if selectedsize_query == "2/0" %}Selected{% endif %}>2/0</option>
+            <option value="3/0" {% if selectedsize_query == "3/0" %}Selected{% endif %}>3/0</option>
+            <option value="4/0" {% if selectedsize_query == "4/0" %}Selected{% endif %}>4/0</option>
+            <option value="250" {% if selectedsize_query == "250" %}Selected{% endif %}>250</option>
+            <option value="300" {% if selectedsize_query == "300" %}Selected{% endif %}>300</option>
+            <option value="350" {% if selectedsize_query == "350" %}Selected{% endif %}>350</option>
+            <option value="400" {% if selectedsize_query == "400" %}Selected{% endif %}>400</option>
+            <option value="500" {% if selectedsize_query == "500" %}Selected{% endif %}>500</option>
+            <option value="600" {% if selectedsize_query == "600" %}Selected{% endif %}>600</option>
+            <option value="750" {% if selectedsize_query == "750" %}Selected{% endif %}>750</option>
+            <option value="1000" {% if selectedsize_query == "1000" %}Selected{% endif %}>1000</option>
+            <option value="1250" {% if selectedsize_query == "1250" %}Selected{% endif %}>1250</option>
+            <option value="1500" {% if selectedsize_query == "1500" %}Selected{% endif %}>1500</option>
+            <option value="1750" {% if selectedsize_query == "1750" %}Selected{% endif %}>1750</option>
+            <option value="2000" {% if selectedsize_query == "2000" %}Selected{% endif %}>2000</option>
+        </select> AWG or kcmil</sup></p>
+                
+        <p><label for="cable_run">Cable run length: </label>
+        <input type="text" id="cable_run" name="cable_run" value="{{ cablerun_query|escape }}"> ft </p>
+        
+        <p><input type="submit" id="calc_vdrop" name="calc_vdrop" value="Submit" /></p>
+    </fieldset>
+
+    {% if show_results %}
+        <h2>Results</h2>
+        <fieldset>
+            {% if volt_drop %}
+                <p>Full load current: {{ load_amps }} A </p>
+                <p>For a {{ selectedsize_query }} {% if metric_size > 110 %}kcmil{% else %}AWG{% endif %} {{ cond_query }}, {{ nocores_query }} Core cable of length {{ cablerun_query }} ft: </p>
+                <fieldset>
+                <p>The {% if phases_query = "3" %}three-phase{% else %}single phase{% endif %} voltage drop is: {{ volt_drop }} V </p>
+                <p>(Equivalent to {{ percent_drop }} % of nominal voltage {{ volt_query }} V)</p>
+                </fieldset>
+            {% else %}
+                <p>Voltage drop could not be calculated (<a href="../help/" target="_blank">help!</a>)</p>
+            {% endif %}
+        </fieldset>
+    {% endif %}
+    
+    
+</div>
+</form>
+{% endblock %}

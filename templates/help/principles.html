@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="Layout_flat">
+    <h2>Principles of Cable Sizing</h2>
+    <h3>1. Introduction</h3>
+        <p>Cable (or conductor) sizing is the process of selecting appropriate sizes for electrical power cable conductors. Cable sizes are typically decribed in terms of cross-sectional area, American Wire Gauge (AWG) or kcmil, depending on geographic region. </p>
+        <p>The proper sizing of cables is important to ensure that the cable can:</p>
+        <ul class="indented">
+            <li>Operate continuously under full load without being damaged</li>
+            <li>Provide the load with a suitable voltage (and avoid excessive voltage drops)</li>
+            <li>Withstand the worst short circuits currents flowing through the cable</li>
+        </ul>
+        <p>Cable sizing methods do differ across international standards (e.g. IEC, NEC, BS, etc) and some standards emphasise certain things over others. However the general principles that underpin all cable sizing calculation do not change. When sizing a cable, the following general process is typically followed:</p>
+        <ul class="indented">
+            <li>Gather data about the cable, its installation conditions, the load that it will carry, etc</li>
+            <li>Determine the minimum cable size based on ampacity (continuous current carrying capacity) </li>
+            <li>Determine the minimum cable size based on voltage drop considerations </li>
+            <li>Determine the minimum cable size based on short circuit temperature rise</li>
+            <li>Select the cable based on the highest of the sizes calculated in the steps above </li>
+        </ul>
+    
+    <h3>2. Data Gathering</h3>
+        <p>The first step is to collate the relevant information that is required to perform the sizing calculation. Typically, you will need to obtain the following data:</p>
+        
+        <p><b>(1) Basic cable data</b> - the basic characteristics of the cable's physical construction, which includes:
+        <ul class="indented">
+            <li>Conductor material - e.g. copper or aluminium </li>
+            <li>Insulation or cable type - e.g. PVC, XLPE, EPR (for IEC cables), TW, THHW, XHH, etc (for NEC cables) </li>
+            <li>Number of cores - single core or multicore (e.g. 2C, 3C or 4C) </li>
+        </ul>
+        <p><b>(2) Load data</b> - the characteristics of the load that the cable will supply, which includes:</p>
+        <ul class="indented">
+            <li>Number of phases, e.g. three phase or single phase</li>
+            <li>System / source voltage</li>
+            <li>Full load current (A) - or calculate this if the load is defined in terms of power (kW)</li>
+            <li>Full load power factor (pu)</li>
+            <li>Distance / length of cable run from source to load - this length should be as close as possible to the actual route of the cable and include enough contingency for vertical drops / rises and termination of the cable tails</li>
+        </ul>
+       <p><b>(3) Cable installation</b> - how the cable will be installed, which includes:
+       <ul class="indented">
+            <li>Installation method - e.g. cable tray / ladder, in conduit / raceways, against a wall, in air, directly buried, etc</li>
+            <li>Ambient or soil temperature at the installation site</li>
+            <li>Cable grouping, i.e. the number of other cables that are bunched together or installed in the same area</li>
+            <li>Cable spacing, i.e. whether cables are installed touching or spaced</li>
+            <li>Soil thermal resistivity (for underground cables)</li>
+            <li>For single core three-phase cables, are the cables installed in trefoil or laid flat?</li>
+        </ul>
+    
+    <h3>3. Cable Selection Based on Ampacity</h3>
+    
+        <p>Current flowing through a cable generates heat through the resistive losses in the conductors, dielectric losses through the insulation and resistive losses from current flowing through any cable screens / shields and armouring.</p>
+
+        <p>A cable's constituent parts (particularly the insulation) must be capable of withstanding the temperature rise and heat emanating from the cable. The ampacity of a cable is the maximum current that can flow continuously through a cable without damaging the insulation. It is sometimes also referred to as the continuous current rating or current carrying capacity of a cable.</p>
+
+        <p>Cables with larger conductor cross-sectional areas (i.e. more copper or aluminium) have lower resistive losses and are able to dissipate the heat better than smaller cables. Therefore a 16 mm<sup>2</sup> (or 6 AWG) cable will have a higher ampacity than a 4 mm<sup>2</sup> (or 12 AWG) cable. </p>
+    
+        <h4>3.1 Base Ampacities</h4>
+        <p>International standards and manufacturers of cables will quote base ampacities for specific types of cable constructions (e.g. copper conductor, PVC insulated, 0.6/1kV voltage grade, etc) and a base set of installation conditions (e.g. ambient temperature of 40&degC, installation in conduit / raceways, etc). It is important to note that these ampacities are only valid for the quoted types of cables and base installation conditions.</p>
+        
+        <h4>3.2 Installed / Derated Ampacities</h4>
+        <p>When the proposed installation conditions differ from the base conditions, derating (or correction) factors can be applied to the base ampacities to obtain the actual installed current ratings.</p>
+
+        <p>International standards and cable manufacturers will provide derating factors for a range of installation conditions, for example ambient / soil temperature, grouping or bunching of cables, soil thermal resistivity, etc. The installed current rating is calculated by multiplying the base current rating with each of the derating factors, i.e.</p>
+
+        <div class="equation">
+            I<sub>c</sub> = I<sub>b</sub> . k<sub>d</sub>
+        </div>
+        <p>where I<sub>c</sub> is the installed / derated ampacity of the cable (A)</p>
+        <div class="indented">
+
+                <p>I<sub>b</sub> is the base cable ampacity (A) </p>
+                <p>k<sub>d</sub> are the product of all the derating factors </p>
+        </div>
+                
+        <p>For example, suppose a cable had an ambient temperature derating factor of k<sub>amb</sub> = 0.94 and a grouping derating factor of k<sub>g</sub> = 0.85, then the overall derating factor k<sub>d</sub> = 0.94x0.85 = 0.799. For a cable with a base ampacity of 42A, the installed / derated ampacity would be I<sub>c</sub> = 0.799x42 = 33.6A. </p>
+    
+    <h3>4. Cable Selection Based on Voltage Drop</h3>
+    
+        <p>A cable's conductor can be seen as an impedance and as a result, whenever current flows through a cable, there will be a voltage drop across it, derived by Ohm's Law (i.e. V = IZ). The voltage drop will depend on two things:</p>
+        
+        <ul class="indented">
+            <li>Current flow through the cable - the higher the current flow, the higher the voltage drop</li>
+            <li>Impedance of the conductor - the larger the impedance, the higher the voltage drop</li>
+        </ul>
+
+        <p>The impedance of the cable is a function of the cable size (cross-sectional area) and the length of the cable. Most cable manufacturers will quote a cable's resistance and reactance in Ohms/km or Ohms/ft.</p>
+        
+        <p>For AC systems, the method of calculating voltage drops based on load power factor is commonly used. Full load currents are normally used, but if the load has high startup currents (e.g. motors), then voltage drops based on starting current (and power factor if applicable) should also be calculated.</p>
+        <p>For a three phase system: </p>
+        <div class="equation"><img height=38 alt="3ph_voltdrop" border=0 src="../../static/images/3ph_volt_drop.png"></div>
+        <p>For a single phase system: </p>
+        <div class="equation"><img height=38 alt="1ph_voltdrop" border=0 src="../../static/images/1ph_volt_drop.png"></div>
+        <p>Where V is the three phase or single phase voltage drop (V)</p>
+        <div class="indented">
+            <p>I is the nominal full load or starting current as applicable (A) </p>
+            <p> R<sub>c</sub> is the ac resistance of the cable (Ohms/km or Ohms/ft) </p>
+            <p> X<sub>c</sub> is the ac reactance of the cable (Ohms/km or Ohms/ft) </p>
+            <p> \cos\phi is the load power factor (pu) </p>
+            <p> L is the length of the cable (m or ft) </p>
+         </div>
+         <p>When sizing cables for voltage drop, a maximum voltage drop is specified, and then the smallest cable size that meets the voltage drop constraint is selected. For example, suppose a 5% maximum voltage drop is specified. 16mm<sup>2</sup>, 25mm<sup>2</sup> and 35mm<sup>2</sup> cables have calculated voltage drops of 6.4%, 4.6% and 3.2% respectively. The 25mm<sup>2</sup> cable is selected as it is the smallest cable that fulfils the maximum voltage drop criteria of 5%.</p>
+         <p>Maximum voltage drops are typically specified because load consumers (e.g. appliances) will have an input voltage tolerance range. This means that if the voltage at the appliance is lower than its rated minimum voltage, then the appliance may not operate correctly.</p>
+
+        <p>In general, most electrical equipment will operate normally at a voltage as low as 80% nominal voltage. For example, if the nominal voltage is 230VAC, then most appliances will run at >184VAC. Cables are typically sized for a more conservative maximum voltage drop, in the range of 5 to 10% at full load. </p>
+    
+    <h3>5. Cable Selection Based on Short Circuit Temperature Rise</h3>
+
+        <p><b>Note</b> that short circuit temperature rise is not required for cable sizing to NEC standards.</p>
+        <p>During a short circuit, a high amount of current can flow through a cable for a short time. This surge in current flow causes a temperature rise within the cable. High temperatures can trigger unwanted reactions in the cable insulation, sheath materials and other components, which can prematurely degrade the condition of the cable. As the cross-sectional area of the cable increases, it can dissipate higher fault currents for a given temperature rise. Therefore, cables should be sized to withstand the largest short circuit that it is expected to see. </p>
+        <p>The minimum cable size due to short circuit temperature rise is typically calculated with an equation of the form:</p>
+        <div class="equation"><img height=40 alt="temp_rise" border=0 src="../../static/images/sc_temp_rise.png"></div>
+
+        <p>Where A is the minimum cross-sectional area of the cable (mm<sup>2</sup>)</p>
+        <div class="indented">
+            <p>i is the prospective short circuit current (A) </p>
+            <p>t is the duration of the short circuit (s) </p>
+            <p>k is a short circuit temperature rise constant </p>
+            <p>The temperature rise constant is calculated based on the material properties of the conductor and the initial and final conductor temperatures. IEC 60364-5-54 calculates it as follows: </p>
+            
+            <p>For copper cables: <img height=50 alt="k_copper" border=0 src="../../static/images/k_copper.png"></p>
+            <p>For aluminium cables: <img height=50 alt="k_aluminium" border=0 src="../../static/images/k_aluminium.png"></p>
+            <p>Where \theta<sub>i</sub> and \theta<sub>f</sub> are the initial and final conductor temperatures respectively.</p>
+            
+            <p>As a rough guide, the following temperatures are common for the different insulation materials:</p>
+            <table border="1" cellpadding="5" cellspacing="0" style="text-align:center;">
+
+            <tr>
+            <th style="background:#efefef;" width="80px"> Material
+            </th><th style="background:#efefef;" width="110px"> Max Operating Temperature <sup>o</sup>C
+            </th><th style="background:#efefef;" width="100px"> Limiting Temperature <sup>o</sup>C
+            </th></tr>
+            <tr>
+
+            <td> PVC </td><td> 75 </td><td> 160
+            </td></tr>
+            <tr>
+            <td> EPR </td><td> 90 </td><td> 250
+            </td></tr>
+            <tr>
+            <td> XLPE </td><td> 90 </td><td> 250
+
+            </td></tr></table>
+        </div>
+     
+    </div>
+    
+{% endblock %}

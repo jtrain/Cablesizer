@@ -1,0 +1,46 @@
+/**********************************
+
+Use: Main Screen Import
+
+***********************************/
+
+@import "reset.css";
+@import "core.css";
+
+@import "cmxformTemplate.css";
+@import "cmxform.css";
+
+.Layout_left{ width:33%; float:left; padding-left: 10px; padding-bottom: 10px;}						
+.Layout_middle{ width:33%; float:left;}		
+.Layout_right{ width:33%; float:left;}	
+					
+.Layout_header{ width:100%; height:60px; border-bottom: 1px solid black; border-bottom: 1px solid grey; padding-top: 14px; padding-left: 12px;}
+.Header_left { width:40%; float: left; }
+.Header_right { width:150px; padding-top: 5px; float: right; }
+
+.header_menu { font-weight: bold; }
+.header_menu ul li a { color: #386daf; padding: 0px 3px 0px 3px; margin-right: 20px; line-height: 20px; text-decoration: none;  }
+.header_menu ul li a:hover, .header_menu ul li a.selected{ color: #689ddf; text-decoration:none; }
+
+.Layout_footer { float:left; width:100%; height:30px; clear: both; text-align: center; font-size: 8pt; padding-top: 10px; border-top: 1px solid grey;}
+.Layout_footer li { border-left:1px solid #8A8C8F;display:inline;margin:0;padding:0 3px 0 5px;font:11px/16px Arial,Helvetica,sans-serif;background:none; }
+.Layout_footer .first { border-left:none; }
+.Layout_footer a { color:#333;text-decoration:none }
+.Layout_footer a:hover { text-decoration:underline; }
+
+.Layout_flat { width:90%; padding: 0px 0px 30px 40px; float:left; }
+
+.Layout_report { width:100%; padding: 15px 0px 20px 40px; float:left; background-image:url('gridlines.gif'); }
+.Layout_report_left { width:40%; margin-right:10px; float: left; padding-left: 2px; padding-bottom: 20px}
+.Layout_report_right { width:43%; margin-left:10px; float: left; padding-right: 2px; padding-bottom: 20px}
+
+.indented { padding-left: 25px; }
+.indented li { padding-bottom: 10px }
+.equation { padding-left: 50px; }
+
+.Layout_menubar{ width:50%; height:35px; float: left;}
+.underlinemenu{ font-weight: bold; width: 100%; }
+.underlinemenu ul{ padding: 6px 0 7px 0; /*6px should equal top padding of "ul li a" below, 7px should equal bottom padding + bottom border of "ul li a" below*/ margin: 0; text-align: right; //set value to "left", "center", or "right"*/ }
+.underlinemenu ul li { display: inline; }
+.underlinemenu ul li a{ color: #494949; padding: 6px 3px 4px 3px; /*top padding is 6px, bottom padding is 4px*/ margin-right: 20px; /*spacing between each menu link*/ text-decoration: none; border-bottom: 3px solid gray; /*bottom border is 3px*/ }
+.underlinemenu ul li a:hover, .underlinemenu ul li a.selected{ border-bottom-color: black; }

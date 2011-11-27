@@ -1,0 +1,254 @@
+{% extends "base_common.html" %}
+
+{% block jscript %}
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#load_input").validate({
+      rules: {
+    load_volt: {
+      required: true,
+      number: true,
+      max: 1000,
+      min: 0
+    },
+    load_kw: {
+      required: "#load_current:blank",
+      number: true,
+      min: 0
+    },
+    load_current: {
+      required: "#load_kw:blank",
+      number: true,
+      min: 0
+    },
+    load_eff: {
+      required: "#load_current:blank",
+      number: true,
+      range: [0, 1]
+    },
+    load_pf: {
+      required: true,
+      number: true,
+      range: [0, 1]
+    }
+   }
+ });
+});
+</script>
+
+<style type="text/css">
+#load_input { width: 100%; }
+#load_input label { width: 150px; }
+#load_input label.error, #load_input input.Submit { margin-left: 153px; }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class=Layout_middle>
+
+<h2>Ampacity Calculation</h2>
+<fieldset>
+    <p><label for="ref_method"><a href="/help/iec_refmethods/" target="_blank">Installation reference method:</a></label> <select name="ref_method">
+        <option value="A" {% if refmethod_query == "A" %}Selected{% endif %}>A</option>
+        <option value="B" {% if refmethod_query == "B" %}Selected{% endif %}>B</option>
+        <option value="C" {% if refmethod_query == "C" %}Selected{% endif %}>C</option>
+        <option value="D" {% if refmethod_query == "D" %}Selected{% endif %}>D</option>
+        <option value="E" {% if refmethod_query == "E" %}Selected{% endif %}>E</option>
+        <option value="F" {% if refmethod_query == "F" %}Selected{% endif %}>F</option>
+        <option value="G" {% if refmethod_query == "G" %}Selected{% endif %}>G</option>
+    </select></p>
+    
+    <p><input type="submit" id="refmethod_update" name="refmethod_update" value="Update" /></p>
+    <p></p>
+</fieldset>
+
+    <h2>Installation Conditions</h2>
+    
+    <fieldset>
+    
+    {% if refmethod_query == "F" and nocores_query == "Multi" or refmethod_query == "G" and nocores_query == "Multi" %}
+        <p>Reference installation methods F and G are for single core cables only</p>
+    
+    {% else %} 
+    
+        {% if refmethod_query == "E" and nocores_query == "Single" %}
+        <p>Reference installation method E is for multi-core cables only</p>
+        
+        {% else %}
+            
+            <p><label for="amb_temp">{% if refmethod_query == "D" %}Soil{% else %}Ambient{% endif %} temperature:</label> <select name="amb_temp">
+                    <option value="10" {% if ambtemp_query == "10" %}Selected{% endif %}>10</option>
+                    <option value="15" {% if ambtemp_query == "15" %}Selected{% endif %}>15</option>
+                    <option value="20" {% if ambtemp_query == "20" %}Selected{% endif %}>20</option>
+                    <option value="25" {% if ambtemp_query == "25" %}Selected{% endif %}>25</option>
+                    <option value="30" {% if ambtemp_query == "30" %}Selected{% endif %}>30</option>
+                    <option value="35" {% if ambtemp_query == "35" %}Selected{% endif %}>35</option>
+                    <option value="40" {% if ambtemp_query == "40" %}Selected{% endif %}>40</option>
+                    <option value="45" {% if ambtemp_query == "45" %}Selected{% endif %}>45</option>
+                    <option value="50" {% if ambtemp_query == "50" %}Selected{% endif %}>50</option>
+                    <option value="55" {% if ambtemp_query == "55" %}Selected{% endif %}>55</option>
+                    <option value="60" {% if ambtemp_query == "60" %}Selected{% endif %}>60</option>
+             </select> &degC</p>
+            
+            {% if refmethod_query == "A" or refmethod_query == "B" or refmethod_query == "C" or refmethod_query == "D" %}
+                <p><label for="no_cables">No. of grouped cables:</label> <select name="no_cables">
+                    <option value="1" {% if nocables_query == "1" %}Selected{% endif %}>1</option>
+                    <option value="2" {% if nocables_query == "2" %}Selected{% endif %}>2</option>
+                    <option value="3" {% if nocables_query == "3" %}Selected{% endif %}>3</option>
+                    <option value="4" {% if nocables_query == "4" %}Selected{% endif %}>4</option>
+                    <option value="5" {% if nocables_query == "5" %}Selected{% endif %}>5</option>
+                    <option value="6" {% if nocables_query == "6" %}Selected{% endif %}>6</option>
+                    <option value="7" {% if nocables_query == "7" %}Selected{% endif %}>7</option>
+                    <option value="8" {% if nocables_query == "8" %}Selected{% endif %}>8</option>
+                    <option value="9" {% if nocables_query == "9" %}Selected{% endif %}>9</option>
+                    <option value="12" {% if nocables_query == "12" %}Selected{% endif %}>12</option>
+                    <option value="16" {% if nocables_query == "16" %}Selected{% endif %}>16</option>
+                    <option value="20" {% if nocables_query == "20" %}Selected{% endif %}>20</option>
+                </select></p>
+            {% endif %}
+            
+            {% if refmethod_query == "C" %}
+                <p><label for="inst_type">Installation type:</label> <select name="inst_type">
+                    <option value="Wall" {% if insttype_query == "Wall" %}Selected{% endif %}>Directly on a wall</option>
+                    <option value="Ceiling" {% if insttype_query == "Ceiling" %}Selected{% endif %}>Under a ceiling</option>
+                </select></p>
+            {% endif %}
+            
+            {% if refmethod_query == "D" %}
+                <p><label for="inst_type">Installation type:</label> <select name="inst_type">
+                    <option value="Direct" {% if insttype_query == "Direct" %}Selected{% endif %}>Directly buried</option>
+                    <option value="Conduit" {% if insttype_query == "Conduit" %}Selected{% endif %}>Buried in conduit</option>
+                </select></p>
+                
+                <p><label for="therm_res">Thermal resistivity:</label> <select name="therm_res">
+                    <option value="0.5" {% if thermalres_query == "0.5" %}Selected{% endif %}>0.5</option>
+                    <option value="0.7" {% if thermalres_query == "0.7" %}Selected{% endif %}>0.7</option>
+                    <option value="1" {% if thermalres_query == "1" %}Selected{% endif %}>1.0</option>
+                    <option value="1.5" {% if thermalres_query == "1.5" %}Selected{% endif %}>1.5</option>
+                    <option value="2" {% if thermalres_query == "2" %}Selected{% endif %}>2.0</option>
+                    <option value="2.5" {% if thermalres_query == "2.5" %}Selected{% endif %}>2.5</option>
+                    <option value="3" {% if thermalres_query == "3" %}Selected{% endif %}>3.0</option>
+                </select> &degK.m/W</p>
+                
+                <p><label for="ug_spacing">Underground spacing:</label> <select name="ug_spacing">
+                    <option value="Touching" {% if ugspacing_query == "Touching" %}Selected{% endif %}>Touching</option>
+                    <option value="0.25m" {% if ugspacing_query == "0.25m" %}Selected{% endif %}>0.25m</option>
+                    <option value="0.5m" {% if ugspacing_query == "0.5m" %}Selected{% endif %}>0.5m</option>
+                </select></p>
+                
+            {% endif %}
+                        
+            {% if refmethod_query == "E" %}
+                <p><label for="inst_type">Installation type:</label> <select name="inst_type">
+                    <option value="Air" {% if insttype_query == "Air" %}Selected{% endif %}>Installed in air</option>
+                    <option value="Ladder_T" {% if insttype_query == "Ladder_T" %}Selected{% endif %}>Cable ladder, cleats, etc (touching)</option>
+                    <option value="Ladder_S" {% if insttype_query == "Ladder_S" %}Selected{% endif %}>Cable ladder, cleats, etc (spaced)</option>
+                    <option value="Tray_PHT" {% if insttype_query == "Tray_PHT" %}Selected{% endif %}>Horizontal perforated cable tray (touching)</option>
+                    <option value="Tray_PHS" {% if insttype_query == "Tray_PHS" %}Selected{% endif %}>Horizontal perforated cable tray (spaced)</option>
+                    <option value="Tray_PVT" {% if insttype_query == "Tray_PVT" %}Selected{% endif %}>Vertical perforated cable tray (touching)</option>
+                    <option value="Tray_PVS" {% if insttype_query == "Tray_PVS" %}Selected{% endif %}>Vertical perforated cable tray (spaced)</option>
+                    <option value="Tray_UT" {% if insttype_query == "Tray_UT" %}Selected{% endif %}>Unperforated cable tray (touching)</option>
+                </select></p>
+                
+                <p><label for="no_layers">No. of layers:</label> <select name="no_layers">
+                    <option value="1" {% if nolayers_query == "1" %}Selected{% endif %}>1</option>
+                    <option value="2" {% if nolayers_query == "2" %}Selected{% endif %}>2</option>
+                    <option value="3" {% if nolayers_query == "3" %}Selected{% endif %}>3</option>
+                </select></p>
+                
+                <p><label for="no_cables">No. of grouped cables:</label> <select name="no_cables">
+                    <option value="1" {% if nocables_query == "1" %}Selected{% endif %}>1</option>
+                    <option value="2" {% if nocables_query == "2" %}Selected{% endif %}>2</option>
+                    <option value="3" {% if nocables_query == "3" %}Selected{% endif %}>3</option>
+                    <option value="4" {% if nocables_query == "4" %}Selected{% endif %}>4</option>
+                    <option value="6" {% if nocables_query == "6" %}Selected{% endif %}>6</option>
+                    <option value="9" {% if nocables_query == "9" %}Selected{% endif %}>9</option>
+                </select></p>
+                
+            {% endif %}
+            
+            {% if refmethod_query == "F" %}
+                <p><label for="inst_type">Installation type:</label> <select name="inst_type">
+                    <option value="Air" {% if insttype_query == "Air" %}Selected{% endif %}>Installed in air</option>
+                    <option value="Ladder_TT" {% if insttype_query == "Ladder_TT" %}Selected{% endif %}>In trefoil on cable ladder, cleats, etc </option>
+                    <option value="Ladder_TL" {% if insttype_query == "Ladder_TL" %}Selected{% endif %}>Laid flat on cable ladder, cleats, etc</option>
+                    <option value="Tray_PHTT" {% if insttype_query == "Tray_PHTT" %}Selected{% endif %}>In trefoil on horizontal perforated cable tray</option>
+                    <option value="Tray_PHTL" {% if insttype_query == "Tray_PHTL" %}Selected{% endif %}>Laid flat on horizontal perforated cable tray</option>
+                    <option value="Tray_PVTT" {% if insttype_query == "Tray_PVTT" %}Selected{% endif %}>In trefoil on vertical perforated cable tray</option>
+                    <option value="Tray_PVTL" {% if insttype_query == "Tray_PVTL" %}Selected{% endif %}>Laid flat on vertical perforated cable tray</option>
+                </select></p>
+                
+                <p><label for="no_layers">No. of layers:</label> <select name="no_layers">
+                    <option value="1" {% if nolayers_query == "1" %}Selected{% endif %}>1</option>
+                    <option value="2" {% if nolayers_query == "2" %}Selected{% endif %}>2</option>
+                    <option value="3" {% if nolayers_query == "3" %}Selected{% endif %}>3</option>
+                </select></p>
+                
+                <p><label for="no_cables">No. of grouped cables:</label> <select name="no_cables">
+                    <option value="1" {% if nocables_query == "1" %}Selected{% endif %}>1</option>
+                    <option value="2" {% if nocables_query == "2" %}Selected{% endif %}>2</option>
+                    <option value="3" {% if nocables_query == "3" %}Selected{% endif %}>3</option>
+                </select></p>
+                
+            {% endif %}
+        
+        <fieldset>
+        <p>Review the above input data and press the button below when you're ready to run the ampacity calculation.</p>
+        <p><input type="submit" id="calc_ampacity" name="calc_ampacity" value="Submit" /></p>
+        </fieldset>
+        
+        {% endif %}
+        
+    </fieldset>
+    </div>
+        
+        {% if show_results and total_derating %}
+            
+            <div class=Layout_right>
+            <h2>Results</h2>
+            <fieldset>
+            <h4>Derating Factors</h4>
+            <fieldset>
+            {% if refmethod_query == "D" %}
+                <p>Soil temperature derating factor: {{ temp_derating.derating }} (Table B.52.15) </p>
+                <p>Thermal resistivity derating factor: {{ thermalres_derating.derating }} (Table B.52.16) </p>
+                <p>Underground spacing derating factor: {{ ugspacing_derating.derating }} (Table B.52.18/19)</p>
+            {% else %}
+                <p>Ambient temperature derating factor: {{ temp_derating.derating }} (Table B.52.14) </p>
+                {% if not refmethod_query == "G" %}
+                    <p>Grouping derating factor: {{ group_derating.derating }} ({{ group_ref }})</p>
+                {% endif %}
+            {% endif %}
+            
+            <p>Total derating factor: {{ total_derating }} </p>
+            </fieldset>
+            
+            <h4>Minimum Cable Size</h4>
+            <fieldset>
+            {% if min_size %}
+                <p>For the full load current: {{ load_amps }} A </p>
+                <p>The minimum {{ nocores_query }} Core cable size is: {{ min_size }} mm<sup>2</sup>, with:</p>
+                <ul class="indented">
+                <li>Base cable ampacity of: {{ min_base_amps }} A ({{ ampacity_ref }})</li>
+                <li>Installed / derated ampacity of: {{ min_amps }} A</li>
+                </ul>
+                
+                <p>(*) All table references are from IEC 60364-5-52:2009
+                
+            {% else %}
+                <p>No cable size found (<a href="../help/" target="_blank">help!</a>)</p>
+                <p>(*) All table references are from IEC 60364-5-52:2009
+            
+            {% endif %}
+            </fieldset>            
+        </fieldset>
+        </div>
+        {% endif %}
+        
+    
+{% endif %}
+</div>
+</form>
+{% endblock %}

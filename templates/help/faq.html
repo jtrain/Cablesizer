@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="Layout_flat">
+    <h2>Troubleshooting</h2>
+    <h3>How do I use Cablesizer?</h3>
+    <p>Using Cablesizer is easy! First select the standard that you want to size to (e.g. NEC or IEC). Then fill in the input data on any of the  main calculation screens (i.e. ampacity, voltage drop or short circuit temperature rise) and press the submit button to get your results. Once you have a set of results from any calculation, you can view the sizing report. The report will only show results from calculations that you have completed. </p>
+    <p>If you want to reset the input data and size a new cable, click on the <a href="/new/">new cable</a> link that is accessible from the top-right menu.</p>
+    <p>For more information, see the tutorials in the <a href="/help/">help pages</a>.</p>
+    
+    <h3>What are the reference installation methods?</h3>
+    <p>The reference installation methods are a set of common cable installation methods (coded from A to G) that are defined in IEC 60364-5-52 Annex A. Specifying a reference installation method is important because different methods correspond to different ampacities (or current carrying capacities). A description of the reference installation methods can be <a href="/help/iec_refmethods/">found here</a>.</p>
+    
+    <h3>Why do my selections disappear when I change screens?</h3>
+        <p>You must have cookies enabled in your browser in order to retain your selections across pages in the application, and also to view the sizing reports. Instructions for enabling cookies on your browser can be <a href="http://www.google.com/support/accounts/bin/answer.py?&answer=61416">found here</a>.</p>
+    
+    <h3>No minimum cable size was found in the ampacity calculation, what should I do?</h3>
+        <p>A cable wasn't found because the load current exceeds the derated cable ampacities available. This could be because the:</p>
+        <div class="indented">
+        <li>Full load current is too high - your load is too large for a single cable to continuously support. Check your loads and see if they can be reduced. Or if you are using multi core cables, consider using single core cables (which have sizes going up to 630mm<sup>2</sup>). If you've specified aluminium cables, consider using copper conductors which have higher current ratings for the same size.</li>
+        <li>Derating factors are too high - the installation conditions you've chosen are too severe for the largest cable to bear. Consider alternative, less onerous installation conditions.</li>
+        </div>
+        <p>Alternatively, you could specify multiple parallel cables. Cablesizer doesn't yet support parallel cables, but you can manually do this by dividing the load current by 2 for two parallel cables, 3 for three parallel cables and so on.</p>
+        
+    <h3>A voltage drop calculation couldn't be done, what should I do?</h3>
+        <p>You've selected a cable size that we don't have impedance values for. Please select cables within the following ranges:</p>
+        <div class="indented">
+        <li>For copper cables: 1.5 mm<sup>2</sup> to 300 mm<sup>2</sup> (multi core) ; 1.5 mm<sup>2</sup> to 630 mm<sup>2</sup> (single core)</li>
+        <li>For aluminium cables: 16 mm<sup>2</sup> to 300 mm<sup>2</sup> (multi core) ; 16 mm<sup>2</sup> to 630 mm<sup>2</sup> (single core)</li>
+        </div>
+    
+    <h3>The sizing report gives me some strange results, what happened?</h3>
+        <p>If you've changed input values in the Basic Cable Information or Load Information forms, you <b>must</b> run all the calculations again  (i.e. ampacity, voltage drop and short circuit temperature rise). The report will only output the results from the last calculation you performed on each calculation screen. </p> 
+        <p>For example, if you decided to switch from copper to aluminium in the ampacity calculation, you must now run the voltage drop and short circuit temperature rise calculations again in order to get sensible results from the sizing report.</p>
+    </div>
+{% endblock %}

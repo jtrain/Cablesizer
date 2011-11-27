@@ -1,0 +1,297 @@
+{% extends "base_nec.html" %}
+
+{% block jscript %}
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#load_input").validate({
+      rules: {
+    
+    load_volt: {
+      required: true,
+      number: true,
+      min: 0,
+      max: 1000
+    },
+    load_kw: {
+      required: "#load_current:blank",
+      number: true,
+      min: 0
+    },
+    load_current: {
+      required: "#load_kw:blank",
+      number: true,
+      min: 0
+    },
+    load_eff: {
+      required: "#load_current:blank",
+      number: true,
+      range: [0, 1]
+    },
+    load_cont: {
+      required: "#load_non_cont:blank",
+      number: true,
+      min: 0
+    },
+    load_non_cont: {
+      required: "#load_cont:blank",
+      number: true,
+      min: 0
+    },
+    prot_device: {
+      required: true,
+      number: true,
+      min: 0
+    },
+    load_pf: {
+      required: true,
+      number: true,
+      range: [0, 1]
+    }
+    
+   }
+ });
+ 
+  $("input[name$='load_type']").click(function(){
+ 
+  var radio_value = $(this).val();
+ 
+  if(radio_value=='General') {
+    $("#yes_box").show("slow");
+    $("#no_box").hide("fast");
+  }
+  else if(radio_value=='Feeder') {
+   $("#no_box").show("slow");
+   $("#yes_box").hide("fast");
+   }
+ });
+ 
+ {% if loadtype_query == "General" %}
+    $("#yes_box").show("slow");
+    $("#no_box").hide("fast");
+ {% else %} 
+    $("#no_box").show("slow");
+    $("#yes_box").hide("fast");
+ {% endif %}
+ 
+});
+</script>
+
+<style type="text/css">
+#load_input { width: 100%; }
+#load_input label { width: 170px; }
+#load_input label.error, #load_input input.Submit { margin-left: 153px; }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class=Layout_middle>
+
+<h2>Ampacity Calculation</h2>
+<fieldset>
+    <p><label for="inst_method">Installation method:</label> <select name="inst_method">
+        <option value="Raceways" {% if instmethod_query == "Raceways" %}Selected{% endif %}>Raceways</option>
+        <option value="Tray" {% if instmethod_query == "Tray" %}Selected{% endif %}>Cable Tray / Ladder</option>
+        <option value="Earth" {% if instmethod_query == "Earth" %}Selected{% endif %}>Earth (Direct Buried)</option>
+        <option value="Air" {% if instmethod_query == "Air" %}Selected{% endif %}>Air</option>
+    </select></p>
+    
+    <p><input type="submit" id="refmethod_update" name="refmethod_update" value="Update" /></p>
+    <p></p>
+</fieldset>
+
+    <h2>Installation Conditions</h2>
+    
+    <fieldset>
+    
+    {% if incompat_type %}
+        <p>Cable type "{{ cabletype_query }}" cannot be used with aluminium conductors.</p>
+    
+    {% else %} 
+    
+        {% if cabletype_query == "USE" and instmethod_query == "Air" %}
+            <p>Cable type "USE" cannot be installed in air.</p>
+        
+        {% else %}
+            
+            <p><label for="amb_temp">{% if refmethod_query == "D" %}Soil{% else %}Ambient{% endif %} temperature:</label> <select name="amb_temp">
+                    <option value="10" {% if ambtemp_query == "10" %}Selected{% endif %}>10 / 50</option>
+                    <option value="15" {% if ambtemp_query == "15" %}Selected{% endif %}>15 / 59</option>
+                    <option value="20" {% if ambtemp_query == "20" %}Selected{% endif %}>20 / 68</option>
+                    <option value="25" {% if ambtemp_query == "25" %}Selected{% endif %}>25 / 77</option>
+                    <option value="30" {% if ambtemp_query == "30" %}Selected{% endif %}>30 / 86</option>
+                    <option value="35" {% if ambtemp_query == "35" %}Selected{% endif %}>35 / 95</option>
+                    <option value="40" {% if ambtemp_query == "40" %}Selected{% endif %}>40 / 104</option>
+                    <option value="45" {% if ambtemp_query == "45" %}Selected{% endif %}>45 / 113</option>
+                    <option value="50" {% if ambtemp_query == "50" %}Selected{% endif %}>50 / 122</option>
+                    <option value="55" {% if ambtemp_query == "55" %}Selected{% endif %}>55 / 131</option>
+                    <option value="60" {% if ambtemp_query == "60" %}Selected{% endif %}>60 / 140</option>
+                    <option value="65" {% if ambtemp_query == "65" %}Selected{% endif %}>65 / 149</option>
+                    <option value="70" {% if ambtemp_query == "70" %}Selected{% endif %}>70 / 158</option>
+                    <option value="75" {% if ambtemp_query == "75" %}Selected{% endif %}>75 / 167</option>
+                    <option value="80" {% if ambtemp_query == "80" %}Selected{% endif %}>80 / 176</option>
+                    <option value="90" {% if ambtemp_query == "90" %}Selected{% endif %}>90 / 194</option>
+                    <option value="100" {% if ambtemp_query == "100" %}Selected{% endif %}>100 / 212</option>
+             </select> &degC / &degF</p>
+            
+            <p><label for="cond_temp">Max conductor temp:</label> <select name="cond_temp">
+                {% if cabletype_query == "TW" or cabletype_query == "UF" %}<option value="140" {% if condtemp_query == "140" %}Selected{% endif %}>60 / 140</option>{% endif %}
+                
+                {% if cabletype_query == "THHW" or cabletype_query == "RHW/RHW-2" or cabletype_query == "THW/THW-2" or cabletype_query == "THWN/THWN-2" or cabletype_query == "XHHW/XHHW-2" %}
+                <option value="167" {% if condtemp_query == "167" %}Selected{% endif %}>75 / 167</option>
+                <option value="194" {% if condtemp_query == "194" %}Selected{% endif %}>90 / 194</option>
+                {% endif %}
+                
+                {% if cabletype_query == "USE" or cabletype_query == "ZW" %}
+                <option value="167" {% if condtemp_query == "167" %}Selected{% endif %}>75 / 167</option>
+                {% endif %}
+                
+                {% if cabletype_query == "TBS" or cabletype_query == "SA" or cabletype_query == "SIS" or cabletype_query == "FEP/FEPB" or cabletype_query == "THHN" or cabletype_query == "MI" or cabletype_query == "RHH" or cabletype_query == "USE-2" or cabletype_query == "XHH" or cabletype_query == "ZW-2" %}
+                <option value="194" {% if condtemp_query == "194" %}Selected{% endif %}>90 / 194</option>
+                {% endif %}
+                
+                {% if cabletype_query == "Z" %}<option value="302" {% if condtemp_query == "302" %}Selected{% endif %}>150 / 302</option>{% endif %}
+                {% if cabletype_query == "FEP/FEPB" or cabletype_query == "PFA" %}<option value="392" {% if condtemp_query == "392" %}Selected{% endif %}>200 / 392</option>{% endif %}
+                {% if cabletype_query == "SA" and cond_query == "Copper" %}<option value="392" {% if condtemp_query == "392" %}Selected{% endif %}>200 / 392</option>{% endif %}
+                {% if cabletype_query == "PFAH" or cabletype_query == "TFE" %}<option value="482" {% if condtemp_query == "482" %}Selected{% endif %}>250 / 482</option>{% endif %}
+            </select> &degC / &degF</p>
+               
+            {% if instmethod_query == "Raceways" or instmethod_query == "Earth" or instmethod_query == "Air" %}
+                <p><label for="no_cables">No. of grouped current carrying conductors:</label> <select name="no_cables">
+                    <option value="1" {% if nocables_query == "1" %}Selected{% endif %}>3 or less</option>
+                    <option value="0.8" {% if nocables_query == "0.8" %}Selected{% endif %}>4 to 6</option>
+                    <option value="0.7" {% if nocables_query == "0.7" %}Selected{% endif %}>7 to 9</option>
+                    <option value="0.5" {% if nocables_query == "0.5" %}Selected{% endif %}>10 to 20</option>
+                    <option value="0.45" {% if nocables_query == "0.45" %}Selected{% endif %}>21 to 30</option>
+                    <option value="0.4" {% if nocables_query == "0.4" %}Selected{% endif %}>31 to 40</option>
+                    <option value="0.35" {% if nocables_query == "0.35" %}Selected{% endif %}>>41</option>
+                </select></p>
+            {% endif %}
+            
+            {% if instmethod_query == "Raceways" %}
+                <p>For circular raceways exposed to sunlight on or above rooftops:</p>
+                <p><label for="inst_type">Distance above roof to bottom of conduit:</label> <select name="inst_type">
+                    <option value="0" {% if insttype_query == "0" %}Selected{% endif %}>Not applicable</option>
+                    <option value="33" {% if insttype_query == "33" %}Selected{% endif %}>0 - 13mm (0.5in)</option>
+                    <option value="22" {% if insttype_query == "22" %}Selected{% endif %}>13 - 90mm (0.5 - 3.5in)</option>
+                    <option value="17" {% if insttype_query == "17" %}Selected{% endif %}>90 - 300mm (3.5 - 12in)</option>
+                    <option value="14" {% if insttype_query == "14" %}Selected{% endif %}>300 - 900mm (12 - 36in)</option>
+                </select></p>
+            {% endif %}
+            
+            {% if instmethod_query == "Tray" %}
+                <p><label for="inst_type">Cable tray / ladder cover:</label> <select name="inst_type">
+                    <option value="Uncovered" {% if insttype_query == "Uncovered" %}Selected{% endif %}>Uncovered</option>
+                    <option value="Covered" {% if insttype_query == "Covered" %}Selected{% endif %}>Covered</option>
+                </select></p>
+            {% endif %}
+            
+        <fieldset>
+        <p>Review the above input data and press the button below when you're ready to run the ampacity calculation.</p>
+        <p><input type="submit" id="calc_ampacity" name="calc_ampacity" value="Submit" /></p>
+        </fieldset>
+        
+        {% endif %}
+        
+    </fieldset>
+    
+        
+    </div>
+    
+    {% if over_load %}
+        <div class=Layout_right>
+        <h2>Protective Device Error</h2>
+        <fieldset>
+        <p>The continuous load + non-continuous load = {{ total_load }} A</p>
+        <p>This exceeds the protective device rating = {{ prot_query }} A</p>
+        <p><b>Select lower loads or a higher protective device rating and try again.</b></p>
+        </fieldset>
+        </div>
+    {% endif %}
+    
+    {% if temp_warning %}
+        <div class=Layout_right>
+        <h2>Ambient Temperature Error</h2>
+        <fieldset>
+        <p>The ambient temperature you've selected exceeds the maximum conductor temperature rating:</p>
+        <div class=indented>
+        <p>Max conductor temp: {{ condtemp_C }}&degC / {{ condtemp_query }} &degF </p>
+        </div>
+        <p>Must be higher than:</p>
+        <div class=indented>
+        <p>Ambient temperature: {{ ambtemp_query }}&degC / {{ amb_temp_F }}&degF </p>
+        </div>
+        {% if instmethod_query == "Raceways" and not insttype_query == "0" %}
+            <p>Circular raceways exposed to sunlight are subject to higher ambient temperatures. The max conductor temp must be higher than the effective ambient temperature:</p>
+            <div class=indented>
+            <p>Temperature adder(*): {{ insttype_query }}&degC or {{ temp_adder_F }}&degF </p>
+            <p>Effective ambient temp: {{ eff_temp }}&degC or {{ eff_temp_F }}&degF </p>
+            </div>
+            <p>(*) Temperature adder for &degC and &degF is not equivalent as per NEC 2011 Table 310.15(B)(3)(c)</p>
+        {% endif %}
+        <p><b>Select a lower ambient temperature or higher conductor temperature rating and try again.</b></p>
+        </fieldset>
+        </div>
+    {% endif %}
+        
+        {% if show_results and total_derating %}
+            
+            <div class=Layout_right>
+            <h2>Results</h2>
+            <fieldset>
+            
+            {% if loadtype_query == "Feeder" %}
+                <h4>Load Current</h4>
+                <fieldset>
+                    {% if full_load %}
+                       <p>Continuous load + Non-Continuous Load = {{ total_load }} A</p>
+                       <p>The assembly is listed to operate at 100% of the protective device rating.</p>
+                       <p>Therefore, the selected load current is the protective device rating = {{ load_amps }} A</p>                   
+                    {% else %}
+                       <p>125% x Continuous load + 100% x Non-Continuous load is {{ max_load }} A.
+                       The protective device rating is {{ prot_query }} A. </p>
+                       <p>The ampacity calculation is based on the larger of these two values, i.e. selected load current = {{ load_amps }} A</p>
+                    {% endif %}
+                </fieldset>
+            {% endif %}
+            
+            <h4>Adjustment Factors</h4>
+            <fieldset>
+                <p>Ambient temperature correction factor: {{ temp_derating }} (Article 310.15(B)(2)) </p>
+                {% if instmethod_query == "Tray" %}
+                    <p>Cable tray / ladder adjustment factor: {{ group_derating }} ({{ group_ref }})</p>
+                {% else %}
+                    <p>Grouping adjustment factor: {{ group_derating }} ({{ group_ref }})</p>
+                {% endif %}
+                        
+                <p>Total adjustment factor: {{ total_derating }} </p>
+            </fieldset>
+            
+            <h4>Minimum Cable Size</h4>
+            <fieldset>
+            {% if min_size %}
+                <p>For the selected load current: {{ load_amps }} A </p>
+                <p>The minimum {{ nocores_query }} Core cable size is: {{ min_size }} {% if use_kcmil %}kcmil{% else %}AWG{% endif %}, with:</p>
+                <ul class="indented">
+                <li>Base cable ampacity of: {{ min_base_amps }} A ({{ ampacity_ref }})</li>
+                <li>Installed / derated ampacity of: {{ min_amps }} A</li>
+                </ul>
+                
+                <p>(*) All references are from NEC 2011
+                
+            {% else %}
+                <p>No cable size found (<a href="../help/" target="_blank">help!</a>)</p>
+                <p>(*) All references are from NEC 2011
+            
+            {% endif %}
+            </fieldset>            
+        </fieldset>
+        </div>
+        {% endif %}
+        
+    
+{% endif %}
+</div>
+</form>
+{% endblock %}

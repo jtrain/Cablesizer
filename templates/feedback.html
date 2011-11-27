@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>Cablesizer - Feedback</title>
+{% endblock %}
+
+{% block jscript %}
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#feedback_input").validate({
+      rules: {
+    feedback_text: {
+      required: true,
+    }
+   }
+ });
+});
+</script>
+<style type="text/css">
+#email_input { width: 100%; }
+#email_input label { width: 100px; }
+#email_input input.feedback_text { width: 500px; }
+#email_input label.error { margin-left: 15px; width: 200px }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="Layout_flat">
+    <h2>Feedback</h2>
+   
+    <p>We're still working to improve Cablesizer, but we need your feedback!</p>
+    <p>So please let us know what you think about Cablesizer and how we can make it better:</p>
+        <div class="indented">
+        <form class="cmxform" id="feedback_input" name="feedback_input" action="." method="POST">
+        {% csrf_token %}
+        <textarea id="feedback_text" name="feedback_text" cols="60" rows="6" class="required"></textarea>
+        <p><input type="submit" id="register" name="register" value="Submit"></p>
+        </form>
+        </div>
+    {% if show_message %}
+        <p>Thank you for giving us your feedback!</p>
+    {% endif %}
+    </div>
+{% endblock %}

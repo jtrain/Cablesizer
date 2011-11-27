@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block common_content %}
+<div class="Layout_menubar">
+    <div class="indented"> <div class="underlinemenu"><p>IEC 60364-5-52: Low Voltage Electrical Installations (2009)</p></div></div>
+</div>
+
+<div class="Layout_menubar">
+    <div class="underlinemenu">
+    <ul>
+    <li><a href="/iec/ampacity/">Ampacity</a></li>
+    <li><a href="/iec/voltdrop/">Volt Drop</a></li>
+    <li><a href="/iec/sctemprise/">Short Circuit</a></li>
+    <li><a href="/iec/report/">Report</a></li>
+    </ul>
+    </div>
+</div>
+
+<form class="cmxform" id="load_input" name="load_input" action="" method="POST">
+{% csrf_token %}
+
+<div class=Layout_left>
+
+<h2>Basic Cable Specification</h2>
+<fieldset>   
+    <p><label for="cond_mat">Conductor material:</label> <select name="cond_mat">
+        <option value="Copper" {% if cond_query == "Copper" %}Selected{% endif %}>Copper</option>
+        <option value="Aluminium" {% if cond_query == "Aluminium" %}Selected{% endif %}>Aluminium</option>
+    </select></p>
+    
+    <p><label for="insulation">Insulation type:</label> <select name="insulation">
+        <option value="PVC" {% if insulation_query == "PVC" %}Selected{% endif %}>PVC</option>
+        <option value="EPR/XLPE" {% if insulation_query == "EPR/XLPE" %}Selected{% endif %}>EPR / XLPE</option>
+    </select></p>
+    
+    <p><label for="no_cores">Number of cores:</label> <select name="no_cores">
+        <option value="Multi" {% if nocores_query == "Multi" %}Selected{% endif %}>Multi-core</option>
+        <option value="Single" {% if nocores_query == "Single" %}Selected{% endif %}>Single Core</option>
+    </select></p>
+     
+</fieldset>
+
+<h2>Load Information </h2>
+<fieldset>
+
+    <p><label for="no_phases">No phases:</label> <select name="no_phases">
+        <option value="3" {% if phases_query == "3" %}Selected{% endif %}>Three Phase</option>
+        <option value="2" {% if phases_query == "2" %}Selected{% endif %}>Single Phase</option>
+    </select></p>
+    
+        <p><label for="load_volt">Nominal load voltage: </label>
+        <input type="text" name="load_volt" class="required" value="{{ volt_query|escape }}"> V</p>
+    
+        <p><label for="load_pf">Full load power factor: </label>
+        <input type="text" name="load_pf" value="{{ pf_query|escape }}"> pu </p>
+        
+        <p> Please enter: </p>
+        
+        <p><label for="load_kw">Rated load kW: </label>
+        <input type="text" id="load_kw" name="load_kw" value="{{ load_query|escape }}"> kW</p>
+        
+        <p><label for="load_eff">Load efficiency: </label>
+        <input type="text" name="load_eff" value="{{ eff_query|escape }}"> pu</p>
+        
+        <p> Or: </p>
+        
+        <p><label for="load_current">Full Load current: </label>
+        <input type="text" id="load_current" name="load_current" value="{{ amps_query|escape }}"> A </p>  
+         
+</fieldset>
+
+{% if load_amps %}
+<fieldset>
+    <fieldset>
+    <p>The selected full load current is {{ load_amps }} A. </p>
+    </fieldset>
+</fieldset>
+{% endif %}
+</div>
+{% endblock %}

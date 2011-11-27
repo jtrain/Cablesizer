@@ -1,0 +1,113 @@
+{% extends "base_common.html" %}
+
+{% block jscript %}
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#load_input").validate({
+      rules: {
+    load_volt: {
+      required: true,
+      number: true,
+      max: 1000,
+      min: 0
+    },
+    load_kw: {
+      required: "#load_current:blank",
+      number: true,
+      min: 0
+    },
+    load_current: {
+      required: "#load_kw:blank",
+      number: true,
+      min: 0
+    },
+    load_eff: {
+      required: "#load_current:blank",
+      number: true,
+      range: [0, 1]
+    },
+    load_pf: {
+      required: true,
+      number: true,
+      range: [0, 1]
+    },
+    max_vdrop: {
+      required: true,
+      number: true,
+      range: [0, 100]
+    },
+    cable_run: {
+      required: true,
+      number: true,
+      min: 0
+    }
+   }
+ });
+});
+</script>
+
+<style type="text/css">
+#load_input { width: 100%; }
+#load_input label { width: 150px; }
+#load_input label.error, #load_input input.Submit { margin-left: 153px; }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class=Layout_middle>
+
+<h2>Voltage Drop Calculation</h2>
+    <fieldset>
+        <p><label for="selected_size">Select cable size:</label> <select name="selected_size">
+            {% if cond_query == "Copper" %}
+            <option value="1.5" {% if selectedsize_query == "1.5" %}Selected{% endif %}>1.5</option>
+            <option value="2.5" {% if selectedsize_query == "2.5" %}Selected{% endif %}>2.5</option>
+            <option value="4" {% if selectedsize_query == "4" %}Selected{% endif %}>4</option>
+            <option value="6" {% if selectedsize_query == "6" %}Selected{% endif %}>6</option>
+            <option value="10" {% if selectedsize_query == "10" %}Selected{% endif %}>10</option>
+            {% endif %}
+            <option value="16" {% if selectedsize_query == "16" %}Selected{% endif %}>16</option>
+            <option value="25" {% if selectedsize_query == "25" %}Selected{% endif %}>25</option>
+            <option value="35" {% if selectedsize_query == "35" %}Selected{% endif %}>35</option>
+            <option value="50" {% if selectedsize_query == "50" %}Selected{% endif %}>50</option>
+            <option value="70" {% if selectedsize_query == "70" %}Selected{% endif %}>70</option>
+            <option value="95" {% if selectedsize_query == "95" %}Selected{% endif %}>95</option>
+            <option value="120" {% if selectedsize_query == "120" %}Selected{% endif %}>120</option>
+            <option value="150" {% if selectedsize_query == "150" %}Selected{% endif %}>150</option>
+            <option value="185" {% if selectedsize_query == "185" %}Selected{% endif %}>185</option>
+            <option value="240" {% if selectedsize_query == "240" %}Selected{% endif %}>240</option>
+            <option value="300" {% if selectedsize_query == "300" %}Selected{% endif %}>300</option>
+            {% if nocores_query == "Single" %}
+            <option value="400" {% if selectedsize_query == "400" %}Selected{% endif %}>400</option>
+            <option value="500" {% if selectedsize_query == "500" %}Selected{% endif %}>500</option>
+            <option value="630" {% if selectedsize_query == "630" %}Selected{% endif %}>630</option>
+            {% endif %}
+        </select> mm<sup>2</sup></p>
+                
+        <p><label for="cable_run">Cable run length: </label>
+        <input type="text" id="cable_run" name="cable_run" value="{{ cablerun_query|escape }}"> m </p>
+        
+        <p><input type="submit" id="calc_vdrop" name="calc_vdrop" value="Submit" /></p>
+    </fieldset>
+
+    {% if show_results %}
+        <h2>Results</h2>
+        <fieldset>
+            {% if volt_drop %}
+                <p>For a {{ selectedsize_query }} mm<sup>2</sup> {{ cond_query }}, {{ insulation_query }}, {{ nocores_query }} Core cable of length {{ cablerun_query }} m: </p>
+                <fieldset>
+                <p>The {% if phases_query = "3" %}three-phase{% else %}single phase{% endif %} voltage drop is: {{ volt_drop }} V </p>
+                <p>(Equivalent to {{ percent_drop }} % of nominal voltage {{ volt_query }} V)</p>
+                </fieldset>
+            {% else %}
+                <p>Voltage drop could not be calculated (<a href="../help/" target="_blank">help!</a>)</p>
+            {% endif %}
+        </fieldset>
+    {% endif %}
+    
+    
+</div>
+</form>
+{% endblock %}

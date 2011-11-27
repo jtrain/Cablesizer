@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block jscript %}
+
+<style type="text/css">
+#load_input { width: 1200px; }
+#load_input label { width: 150px; }
+#load_input label.error, #load_input input.Submit { margin-left: 153px; }
+</style>
+
+{% endblock %}
+
+{% block content %}
+<div class="Layout_menubar">
+    <div class="indented"> <div class="underlinemenu"><p>IEC 60364-5-52: Low Voltage Electrical Installations (2009)</p></div></div>
+</div>
+
+<div class="Layout_menubar">
+    <div class="underlinemenu">
+    <ul>
+    <li><a href="/iec/ampacity/">Ampacity</a></li>
+    <li><a href="/iec/voltdrop/">Volt Drop</a></li>
+    <li><a href="/iec/sctemprise/">Short Circuit</a></li>
+    <li><a href="/iec/report/">Report</a></li>
+    </ul>
+    </div>
+</div>
+
+<div class=Layout_report>
+    
+    {% if show_report %}
+        <h2>IEC Cable Sizing Report</h2>
+        
+        <p><b>Important Note:</b> If you change the common input data (e.g. basic cable and load information) on one page, make sure to run all of the relevant calculations again!</p>
+
+<div class=Layout_report_left>
+        <h3>Basic Information</h3>
+        <p>The following basic cable specification was selected:</p>
+        <div class="indented">
+            <table border="0" cellpadding="2" cellspacing="0" width ="300">
+            <tr><td>Conductor material:</td> <td>{{ cond_mat }}</td></tr>
+            <tr><td>Insulation type:</td> <td>{{ insulation }}</td></tr>
+            <tr><td>Number of cores:</td> <td>{{ no_cores }} core</td></tr>
+            </table>
+        </div>
+        
+        <p>The following load parameters were selected:</p>
+        <div class="indented">
+            <table border="0" cellpadding="2" cellspacing="0" width ="300">
+            <tr><td>Number of phases: </td> <td>{% if no_phases == "3" %}Three phase{% else %}Single phase{% endif %}</td></tr>
+            <tr><td>Nominal load voltage: </td> <td>{{ volts }} V</td></tr>
+            <tr><td>Full load power factor: </td> <td>{{ pf }} pu</td></tr>
+            {% if amps %}
+                <tr><td>Full load current: </td> <td>{{ amps }} A</td></tr>
+            {% else %}
+                <tr><td>Rated load: </td> <td>{{ load_kw }} kW</td></tr>
+                <tr><td>Load efficiency: </td> <td>{{ eff }} pu</td></tr>
+                <tr><td>Full load current: </td> <td>{{ load_amps }} A</td></tr>
+            {% endif %}
+            </table>
+        </div>
+            
+        {% if show_vdcalc %}
+            <h3>Voltage Drop Considerations</h3>
+            <p>The calculation of a {% if no_phases == "3" %}three{% else %}single{% endif %} phase voltage drop for a {{ selected_size }} mm<sup>2</sup> cable is based on the following equation:</p>
+            
+            <div class="equation">
+                {% if no_phases == "3" %}
+                    <img height=38 alt="3ph_voltdrop" border=0 src="../../static/images/3ph_volt_drop.png">
+                {% else %}
+                    <img height=38 alt="1ph_voltdrop" border=0 src="../../static/images/1ph_volt_drop.png">
+                {% endif %}
+            </div>
+            
+            <p>Where V<sub>{% if no_phases == "3" %}3{% else %}1{% endif %}&#934</sub> is the calculated voltage drop (V)</p>
+            <div class="indented">    
+                <p>I is the full load current = {{ load_amps }} A</p>
+                <p>L is the total cable length = {{ cable_run }} m</p>
+                <p>R<sub>c</sub> is the cable ac resistance = {{ R_c }} &#937/km (based on typical values)</p>
+                <p>X<sub>c</sub> is the cable ac reactance = {{ X_c }} &#937/km (based on typical values)</p>
+            </div>
+            
+            <p><b>Result:</b> The voltage drop across the {{ selected_size }} mm<sup>2</sup> cable is <b>V<sub>{% if no_phases == "3" %}3{% else %}1{% endif %}&#934</sub> = {{ volt_drop }} V </b> (or equivalently {{ percent_drop }} % of nominal voltage) </p>
+        {% endif %}
+    </div>
+        
+<div class=Layout_report_right>
+        {% if show_ampcalc %}
+            <h3>Ampacity Considerations</h3>
+            <table border="0" cellpadding="5" cellspacing="10" style="text-align:left;">
+            <tr><td><p>Reference installation method: <b>{{ true_ref_method }}</b></p></td>
+            <td>{% if ref_method == "A" %}<img height=100 border=0 src="../../static/images/Method_A.jpg">{% endif %}
+                {% if ref_method == "B" %}<img height=100 border=0 src="../../static/images/Method_B.jpg">{% endif %}
+                {% if ref_method == "C" %}<img height=130 border=0 src="../../static/images/Method_C.jpg">{% endif %}
+                {% if ref_method == "D" %}<img height=150 border=0 src="../../static/images/Method_D.jpg">{% endif %}
+                {% if ref_method == "E" %}<img height=130 border=0 src="../../static/images/Method_E.jpg">{% endif %}
+                {% if ref_method == "F" %}<img height=130 border=0 src="../../static/images/Method_F.jpg">{% endif %}
+                {% if ref_method == "G" %}<img height=120 border=0 src="../../static/images/Method_G.jpg">{% endif %}
+            </td></tr>
+            </table>
+            <p>The cable is installed under the following conditions:</p>
+            <div class="indented">
+                <table border="0" cellpadding="2" cellspacing="0" width ="500">
+                <tr><td>{% if ref_method == "D" %}Soil{% else %}Ambient{% endif %} Temperature: </td> <td> {{ amb_temp }} &degC</td></tr>
+                              
+                {% if ref_method == "D" or ref_method == "C" or ref_method == "E" or ref_method == "F"%}
+                    <tr><td>Installation type: </td> <td>{{ inst_type }} </td></tr>
+                {% endif %}
+                
+                {% if ref_method == "D" %}
+                    <tr><td>Underground spacing: </td> <td> {{ ug_spacing }} </td></tr>
+                    <tr><td>Thermal resistivity: </td> <td> {{ thermal_res }} &degK.m/W</td></tr>
+                {% endif %}
+                
+                {% if ref_method == "E" or ref_method == "F" %}
+                    <tr><td>No. of layers: </td> <td> {{ no_layers }} layers</td></tr>
+                {% endif %}
+                
+                {% if not ref_method == "G" %}
+                    <tr><td>No. of grouped cables: </td> <td> {{ no_cables }} cables</td></tr>
+                {% endif %}
+                </table>
+            </div>
+            <p>Given this cable installation, the derating factors are as follows:</p>
+            <div class="indented">
+                <table border="0" cellpadding="2" cellspacing="0" width ="500">
+                <tr><td>{% if ref_method == "D" %}Soil{% else %}Ambient{% endif %} Temperature: </td> <td> <b>{{ temp_derating }}</b> (IEC 60364-5-52 {% if ref_method == "D" %}Table B.52.15{% else %}Table B.52.14{% endif %}) </td></tr>
+                {% if ref_method == "D" %}
+                    <tr><td>Thermal resistivity: </td> <td><b>{{ thermalres_derating }}</b> (IEC 60364-5-52 Table B52.16)</td></tr>
+                    <tr><td>Underground spacing: </td> <td> <b>{{ ugspacing_derating }}</b> (IEC 60364-5-52 Table B52.18/19)</td></tr>
+                {% else %}
+                    {% if not ref_method == "G" %}
+                        <tr><td>Grouping derating: </td> <td> <b>{{ group_derating }}</b> (IEC 60364-5-52 {{ group_ref }})</td></tr>
+                    {% endif %}
+                {% endif %}
+                <tr><td>Total derating factor: </td> <td> <b>{{ total_derating }}</b></td></tr>
+                </table>
+            </div>
+            <p><b>Result:</b> For the full load current: {{ load_amps }} A:</p>
+            <div class="indented">
+                <table border="0" cellpadding="2" cellspacing="0" width ="600">
+                <tr><td>Minimum {{ no_cores }} Core cable size is: </td> <td> <b>{{ min_size }} mm<sup>2</sup></b> </td></tr>
+                <tr><td>Cable base ampacity: </td> <td> <b>{{ min_base_amps }} A</b> (IEC 60364-5-52 {{ ampacity_ref }}) </td></tr>
+                <tr><td>Installed / derated ampacity: </td> <td> <b>{{ min_amps }} A</b></td></tr>
+                </table>
+            </div>
+        {% endif %}
+        
+        {% if show_sccalc %}
+            <h3>Short Circuit Temperature Rise</h3>
+            <p>Adiabatic short circuit temperature rise is based on IEC 60364-5-54 Clause 543.1.2:</p>
+            
+            <div class="equation"><img height=40 alt="temp_rise" border=0 src="../../static/images/sc_temp_rise.png"></div>
+            
+            <p>Where A is the minimum cable cross-sectional area allowed (mm<sup>2</sup>)</p>
+            <div class="indented">              
+                <p>i is the maximum prospective fault current = {{ fault_level }} A</p>
+                <p>t is the maximum fault duration = {{ fault_time }} s</p>
+                <p>k is a constant factor determined from IEC 60364-5-54 Annex A:</p>
+            </div>
+            
+            <div class="equation">
+                {% if cond_mat == "Copper" %}
+                    <img height=50 alt="k_copper" border=0 src="../../static/images/k_copper.png">
+                {% else %}
+                    <img height=50 alt="k_aluminium" border=0 src="../../static/images/k_aluminium.png">
+                {% endif %}
+            </div>
+                <div class="indented"><p>Based on initial and final conductor temperatures &#952<sub>i</sub> = {{ initial_temp }} &degC and &#952<sub>f</sub> = {{ final_temp }} &degC </p></div>
+                <div class="equation"><p>k = {{ k_factor }}</p></div>
+               
+            
+            <p><b>Result:</b> Minimum cable size based on short circuit temperature rise is <b>A = {{ min_sc }} mm<sup>2</sup></b></p>
+</div>
+        {% endif %}
+        
+    {% else %}
+    
+        <h2>Cable sizing report could not be created!</h2>
+        <p>You must first generate results for at least one of the calculations (i.e. ampacity, voltage drop or short circuit temperature rise) before a report can be created.</p>
+        <p>If you've done this and a report still isn't created, make sure that you have cookies enabled in your browser.</p>
+    {% endif %}
+
+</div>
+</form>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>Cablesizer - New</title>
+{% endblock %}
+
+{% block content %}
+    <div class="Layout_flat">
+    <h2>Create a New Cable</h2>
+   
+        <p>To create a new cable and delete the existing session data, press the "Go" button below:</p>
+        <p>Note that this will take you back to the Cablesizer home page.</p>
+        
+        <div class="indented">
+        <form class="cmxform" action="/" method="GET">
+        <p><input type="submit" id="new_cable" name="new_cable" value="Go" /></p>
+        </form>
+        </div>
+
+    </div>
+{% endblock %}

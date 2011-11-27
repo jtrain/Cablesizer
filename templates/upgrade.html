@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>Cablesizer - Upgrade</title>
+{% endblock %}
+
+{% block jscript %}
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#email_input").validate({
+      rules: {
+    email_address: {
+      required: true,
+      email: true
+    }
+   }
+ });
+});
+</script>
+<style type="text/css">
+#email_input { width: 100%; }
+#email_input label { width: 100px; }
+#email_input input.email_address { width: 500px; }
+#email_input label.error { margin-left: 15px; width: 200px }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="Layout_flat">
+    <h2>Upgrade Cablesizer - Coming Soon!</h2>
+   
+    <p>We're working on a premium version of Cablesizer, with the following expanded set of features:</p>
+        <div class="indented">
+        <li>Size cables to other international standards, e.g. NEC / NFPA 70, BS, AS/NZS, etc</li>
+        <li>Save and load your cables and access them from anywhere in the world</li>
+        <li>Create templates for similar type cables and rapidly size multiple cables</li>
+        <li>Manage your cables and organise them into projects</li>
+        <li>Export your cable sizing reports to Excel spreadsheets</li>
+        </div>
+    <p>All for a flat subscription fee of $14.95 USD per month. Leave us your email below, and we'll notify you when we've launched.</p>
+        <div class="indented">
+        <form class="cmxform" id="email_input" name="email_input" action="" method="POST">
+        {% csrf_token %}
+        <p><label for="email_address">Email Address: </label>
+        <input type="text" id="email_address" name="email_address" size="40" class="required" value={{ email_query|escape }}> 
+        <input type="submit" id="register" name="register" value="Notify Me!"></p>
+        </form>
+        </div>
+    {% if show_message %}
+        <p>Thank you for registering your email!</p>
+    {% endif %}
+    </div>
+{% endblock %}

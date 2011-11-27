@@ -1,0 +1,112 @@
+{% extends "base_common.html" %}
+
+{% block jscript %}
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#load_input").validate({
+      rules: {
+    load_volt: {
+      required: true,
+      number: true,
+      max: 1000,
+      min: 0
+    },
+    load_kw: {
+      required: "#load_current:blank",
+      number: true,
+      min: 0
+    },
+    load_current: {
+      required: "#load_kw:blank",
+      number: true,
+      min: 0
+    },
+    load_eff: {
+      required: "#load_current:blank",
+      number: true,
+      range: [0, 1]
+    },
+    load_pf: {
+      required: true,
+      number: true,
+      range: [0, 1]
+    },
+    fault_level: {
+      required: true,
+      number: true,
+      min: 0
+    },
+    fault_time: {
+      required: true,
+      number: true,
+      min: 0
+    }
+   }
+ });
+});
+</script>
+
+<style type="text/css">
+#load_input { width: 100%; }
+#load_input label { width: 150px; }
+#load_input label.error, #load_input input.Submit { margin-left: 153px; }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class=Layout_middle>
+
+<h2>Short Circuit Temperature Rise</h2>
+    <fieldset>
+        <p><label for="fault_level">Max short circuit current: </label>
+        <input type="text" id="fault_level" name="fault_level" value="{{ faultlevel_query|escape }}"> kA </p>
+        
+        <p><label for="fault_time">Max fault duration: </label>
+        <input type="text" id="fault_time" name="fault_time" value="{{ faulttime_query|escape }}"> s </p>
+        
+        <p><label for="initial_temp">Initial cable temperature:</label> <select name="initial_temp">
+            <option value="40" {% if initialtemp_query == "40" %}Selected{% endif %}>40</option>
+            <option value="45" {% if initialtemp_query == "45" %}Selected{% endif %}>45</option>
+            <option value="50" {% if initialtemp_query == "50" %}Selected{% endif %}>50</option>
+            <option value="55" {% if initialtemp_query == "55" %}Selected{% endif %}>55</option>
+            <option value="60" {% if initialtemp_query == "60" %}Selected{% endif %}>60</option>
+            <option value="65" {% if initialtemp_query == "65" %}Selected{% endif %}>65</option>
+            <option value="70" {% if initialtemp_query == "70" %}Selected{% endif %}>70</option>
+            <option value="75" {% if initialtemp_query == "75" %}Selected{% endif %}>75</option>
+            <option value="80" {% if initialtemp_query == "80" %}Selected{% endif %}>80</option>
+            <option value="85" {% if initialtemp_query == "85" %}Selected{% endif %}>85</option>
+            <option value="90" {% if initialtemp_query == "90" %}Selected{% endif %}>90</option>
+            <option value="110" {% if initialtemp_query == "110" %}Selected{% endif %}>110</option>
+            <option value="125" {% if initialtemp_query == "125" %}Selected{% endif %}>125</option>
+        </select> &degC</p>
+        
+        <p><label for="final_temp">Final cable temperature:</label> <select name="final_temp">
+            <option value="140" {% if finaltemp_query == "140" %}Selected{% endif %}>140</option>
+            <option value="150" {% if finaltemp_query == "150" %}Selected{% endif %}>150</option>
+            <option value="160" {% if finaltemp_query == "160" %}Selected{% endif %}>160</option>
+            <option value="220" {% if finaltemp_query == "220" %}Selected{% endif %}>220</option>
+            <option value="250" {% if finaltemp_query == "250" %}Selected{% endif %}>250</option>
+            <option value="350" {% if finaltemp_query == "350" %}Selected{% endif %}>350</option>
+        </select> &degC</p>
+                       
+        <p><input type="submit" id="calc_sctemp" name="calc_sctemp" value="Submit" /></p>
+    </fieldset>
+
+    {% if show_results %}
+        <h2>Results</h2>
+        <fieldset>
+            {% if min_sc %}
+                <p>The short circuit temperature rise constant k = {{ k }} </p>
+                <p>The minimum cable size due to short circuit temperature rise is {{ min_sc }} mm<sup>2</sup>. </p>
+            {% else %}
+                <p>Short circuit temperature rise could not be calculated (<a href="../help/" target="_blank">help!</a>)</p>
+            {% endif %}
+        </fieldset>
+    {% endif %}
+    
+    
+</div>
+</form>
+{% endblock %}
